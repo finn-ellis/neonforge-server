@@ -1,4 +1,5 @@
 import atexit
+import sys
 import threading
 from flask import Flask
 from flask_socketio import SocketIO
@@ -12,26 +13,14 @@ socketio = SocketIO(cors_allowed_origins="*")
 kiosk = KioskQueue()
 file_server = FileServer()
 
-def create_app():
-    app = Flask(__name__, instance_relative_config=True)
-    # app.config.from_object(Config)
-    app.config.from_object(Config)
-    # app.config.from_pyfile('config.py', silent=True)
+def start_service_announcer():
+    """Starts the Zeroconf service announcer in a background thread."""
+    print("Starting service announcer...")
+    service_type = "_file-server._tcp.local."
+    service_name = "NF"
+    server_port = 5000  # Default Flask port
 
-    file_server.init_app(app, url_prefix="/api/files", socketio=socketio)
-    kiosk.init_app(app, url_prefix="/api/kiosk", socketio=socketio)
-    socketio.init_app(app)
-    return app
-
-app = create_app()
-
-if __name__ == "__main__":
-    # --- Zeroconf Service Announcement ---
-    SERVICE_TYPE = "_file-server._tcp.local."
-    SERVICE_NAME = "NF"
-    SERVER_PORT = 5000 # Default Flask port
-
-    announcer = ServiceAnnouncer(SERVICE_TYPE, SERVICE_NAME, SERVER_PORT)
+    announcer = ServiceAnnouncer(service_type, service_name, server_port)
 
     # Run the service announcer in a background thread
     announcer_thread = threading.Thread(target=announcer.start, daemon=True)
@@ -40,6 +29,27 @@ if __name__ == "__main__":
     # Register the stop function to be called on exit
     atexit.register(announcer.stop)
 
-    # Run the Flask app (make sure to specify the host and port)
-    # Using '0.0.0.0' makes the server accessible on your local network
-    socketio.run(app, host='0.0.0.0', port=SERVER_PORT, debug=True, use_reloader=False)
+announcer_started = False
+
+def create_app():
+    global announcer_started
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object(Config)
+
+    file_server.init_app(app, url_prefix="/api/files", socketio=socketio)
+    kiosk.init_app(app, url_prefix="/api/kiosk", socketio=socketio)
+    socketio.init_app(app)
+
+    # how do we only do this when the app is ran??? and not for CLI commands?
+    # TODO: change this with prod implementation
+    def start_announcer_once():
+        global announcer_started
+        if not announcer_started:
+            start_service_announcer()
+            announcer_started = True
+    
+    start_announcer_once()
+    
+    return app
+
+app = create_app()

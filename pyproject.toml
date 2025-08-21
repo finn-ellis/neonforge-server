@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "NeonBrushServer"
+version = "0.1.0"
+dependencies = [
+    "flask",
+    "flask-socketio",
+    "zeroconf",
+    # Add other dependencies from requirements.txt files
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["FileServer*", "KioskQueue*"]
