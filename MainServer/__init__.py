@@ -3,8 +3,8 @@ import sys
 import threading
 from flask import Flask
 from flask_socketio import SocketIO
-from .FileServer.file_server import FileServer
-from .FileServer.file_server.service_announcer import ServiceAnnouncer
+from FileServer.file_server import FileServer
+from FileServer.file_server.service_announcer import ServiceAnnouncer
 from flask import Flask
 from .KioskQueue.kiosk_queue import KioskQueue
 from .KioskQueue.kiosk_queue.config import Config

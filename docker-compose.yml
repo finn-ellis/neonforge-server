@@ -14,6 +14,7 @@ services:
 
   # FileServer Frontend Service
   fileserver-frontend:
+    working_dir: /app/fileserver
     build:
       context: MainServer/FileServer/frontend
       dockerfile: ../../../frontend.Dockerfile # Path to the shared frontend Dockerfile
@@ -26,6 +27,7 @@ services:
 
   # KioskQueue Frontend Service
   kiosk-frontend:
+    working_dir: /app/kiosk
     build:
       context: MainServer/KioskQueue/frontend
       dockerfile: ../../../frontend.Dockerfile # Path to the shared frontend Dockerfile
