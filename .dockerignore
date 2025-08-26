@@ -1,0 +1,14 @@
+# .dockerignore
+
+# Ignore IDE and git files
+.idea/
+.vscode/
+.git/
+.gitignore
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore Node.js dependency folders
+node_modules/

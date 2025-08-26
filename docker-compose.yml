@@ -1,0 +1,42 @@
+# docker-compose.yml
+services:
+  # Python Backend Service
+  backend:
+    build:
+      context: MainServer
+      dockerfile: ../backend.Dockerfile
+    ports:
+      - "5000:5000" # Expose backend port to the host
+    volumes:
+      - ./MainServer:/app # Mounts the MainServer code into the container for easy development
+    networks:
+      - app-network
+
+  # FileServer Frontend Service
+  fileserver-frontend:
+    build:
+      context: MainServer/FileServer/frontend
+      dockerfile: ../../../frontend.Dockerfile # Path to the shared frontend Dockerfile
+    ports:
+      - "8080:80" # Expose FileServer frontend on port 8080
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # KioskQueue Frontend Service
+  kiosk-frontend:
+    build:
+      context: MainServer/KioskQueue/frontend
+      dockerfile: ../../../frontend.Dockerfile # Path to the shared frontend Dockerfile
+    ports:
+      - "8081:80" # Expose KioskQueue frontend on port 8081
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+

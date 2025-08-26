@@ -1,6 +1,6 @@
 [submodule "FileServer"]
-	path = FileServer
+	path = MainServer/FileServer
 	url = https://github.com/finn-ellis/neonforge-file-server.git
 [submodule "KioskQueue"]
-	path = KioskQueue
+	path = MainServer/KioskQueue
 	url = https://github.com/finn-ellis/kiosk-queue.git
