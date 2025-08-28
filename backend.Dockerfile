@@ -18,8 +18,13 @@ COPY KioskQueue/__init__.py KioskQueue/
 COPY FileServer/file_server FileServer/
 COPY FileServer/__init__.py FileServer/
 
+# Boot
+COPY boot.sh .
+RUN chmod +x boot.sh
+ENV FLASK_APP=neonforge.py
+
 # Expose the port the app runs on (for documentation and inter-container communication)
 EXPOSE 5000
 
 # Command to run the Flask application
-CMD ["flask", "--app", ".", "run", "--host=0.0.0.0"]
+CMD ["./boot.sh"]
