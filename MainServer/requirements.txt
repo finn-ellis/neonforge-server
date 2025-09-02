@@ -5,7 +5,6 @@ zeroconf
 Flask
 Flask-SQLAlchemy
 Flask-Cors
-twilio
 Flask-SocketIO
 gunicorn
 eventlet

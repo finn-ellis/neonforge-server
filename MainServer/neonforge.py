@@ -1,4 +1,4 @@
-import eventlet
+from eventlet import wsgi
 # eventlet.monkey_patch()
 
 import atexit
@@ -85,4 +85,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # app.run(host="0.0.0.0", port=5000, debug=True)
+    wsgi.server(eventlet.listen(("0.0.0.0", 5000)), app)
