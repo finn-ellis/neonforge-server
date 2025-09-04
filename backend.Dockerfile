@@ -22,6 +22,8 @@ COPY FileServer/__init__.py FileServer/
 COPY boot.sh .
 RUN chmod +x boot.sh
 ENV FLASK_APP=neonforge.py
+# RUN flask kiosk-init-db
+# RUN flask initialize-server
 
 # Expose the port the app runs on (for documentation and inter-container communication)
 EXPOSE 5000

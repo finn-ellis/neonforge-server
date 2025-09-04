@@ -1,6 +1,4 @@
-from eventlet import wsgi
-# eventlet.monkey_patch()
-
+import eventlet
 import atexit
 import sys
 import threading
@@ -10,11 +8,10 @@ from flask_socketio import SocketIO
 from FileServer.file_server import FileServer
 from FileServer.file_server.service_announcer import ServiceAnnouncer
 from flask import Flask
-from KioskQueue.kiosk_queue import KioskQueue
+from KioskQueue.kiosk_queue import KioskQueue, init_db_command
 from KioskQueue.kiosk_queue.config import Config
 import click
 from flask import current_app
-
 
 socketio = SocketIO(cors_allowed_origins="*")
 kiosk = KioskQueue()
@@ -70,10 +67,14 @@ def create_app():
     kiosk.init_app(app, url_prefix="/api/kiosk", socketio=socketio)
     socketio.init_app(app)
 
+    if not hasattr(app, 'extensions'):
+        app.extensions = {}
+    app.extensions['file_server'] = file_server
+    app.extensions['kiosk_queue'] = kiosk
+
     app.cli.add_command(init_server_command)
 
-    # how do we only do this when the app is ran??? and not for CLI commands?
-    # TODO: change this with prod implementation
+    # Currently handling this with a CLI command called on run:
     # def start_announcer_once():
     #     global announcer_started
     #     if not announcer_started:
@@ -85,5 +86,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5000, debug=True)
+    from eventlet import wsgi
     wsgi.server(eventlet.listen(("0.0.0.0", 5000)), app)
