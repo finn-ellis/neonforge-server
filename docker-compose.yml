@@ -10,8 +10,8 @@ services:
       - ./MainServer:/app # Mounts the MainServer code into the container for easy development
     environment:
       # Comma-separated list of allowed browser origins for both extensions
-      FILESERVER_CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
-      KIOSK_QUEUE_CORS_ORIGINS: http://localhost:8081,http://127.0.0.1:8081
+      FILESERVER_CORS_ORIGINS: http://${HOST_IP}:8080,http://localhost:8080,http://127.0.0.1:8080
+      KIOSK_QUEUE_CORS_ORIGINS: http://${HOST_IP}:8081,http://localhost:8081,http://127.0.0.1:8081
       # Set to true only if you need cookies / auth headers
       FILESERVER_CORS_SUPPORTS_CREDENTIALS: false
       KIOSK_QUEUE_CORS_SUPPORTS_CREDENTIALS: false
@@ -24,18 +24,20 @@ services:
       args:
         APP_DIR: FileServer/frontend
         WORK_DIR: /app/fileserver-frontend
-        VITE_API_URL: "http://host.docker.internal:80"
+        VITE_API_URL: "http://${HOST_IP}:80"
     ports:
       - "8080:81" # Expose FileServer frontend on port 8080
     environment:
       - NGINX_PORT=81
-      - API_URL="http://host.docker.internal:80"
+      - API_URL="http://${HOST_IP}:80"
     depends_on:
       - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # networks:
     #   - app-network
 
-  # KioskQueue Frontend Service
+    # KioskQueue Frontend Service
   kiosk-frontend:
     build:
       context: MainServer
@@ -43,14 +45,16 @@ services:
       args:
         APP_DIR: KioskQueue/frontend
         WORK_DIR: /app/kiosk-frontend
-        VITE_API_URL: "http://host.docker.internal:80"
+        VITE_API_URL: "http://${HOST_IP}:80"
     ports:
       - "8081:81" # Expose KioskQueue frontend on port 8081
     environment:
       - NGINX_PORT=81
-      - API_URL="http://host.docker.internal:80"
+      - API_URL="http://${HOST_IP}:80"
     depends_on:
       - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # networks:
     #   - app-network
 

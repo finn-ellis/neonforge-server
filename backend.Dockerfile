@@ -28,5 +28,7 @@ ENV FLASK_APP=neonforge.py
 # Expose the port the app runs on (for documentation and inter-container communication)
 EXPOSE 80
 
+RUN export HOST_IP=$(hostname -I | awk '{print $1}') && echo "HOST_IP=${HOST_IP}" > .env
+
 # Command to run the Flask application
 CMD ["./boot.sh"]
