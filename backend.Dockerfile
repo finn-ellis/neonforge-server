@@ -6,7 +6,7 @@ FROM python:3.13.7-alpine
 WORKDIR /app
 
 # Copy the requirements file first to leverage Docker cache
-COPY ../requirements.txt .
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -26,7 +26,7 @@ ENV FLASK_APP=neonforge.py
 # RUN flask initialize-server
 
 # Expose the port the app runs on (for documentation and inter-container communication)
-EXPOSE 5000
+EXPOSE 80
 
 # Command to run the Flask application
 CMD ["./boot.sh"]

@@ -1,5 +1,4 @@
 #!/bin/sh
-python setup.py
 flask kiosk-init-db
-flask initialize-server
-exec gunicorn --worker-class eventlet -w 1 -b :5000 neonforge:app
+# The service announcer now starts in gunicorn post_fork hook defined in gunicorn.conf.py
+exec gunicorn -c gunicorn.conf.py neonforge:app

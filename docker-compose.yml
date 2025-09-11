@@ -5,19 +5,16 @@ services:
     build:
       context: MainServer
       dockerfile: ../backend.Dockerfile
-    ports:
-      - "5000:5000" # Expose backend port to the host
+    network_mode: host # Use host network for mDNS broadcasting
     volumes:
       - ./MainServer:/app # Mounts the MainServer code into the container for easy development
     environment:
       # Comma-separated list of allowed browser origins for both extensions
-      FILESERVER_CORS_ORIGINS: http://192.168.1.38:8080,http://127.0.0.1:8080
-      KIOSK_QUEUE_CORS_ORIGINS: http://192.168.1.38:8081,http://127.0.0.1:8081
+      FILESERVER_CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      KIOSK_QUEUE_CORS_ORIGINS: http://localhost:8081,http://127.0.0.1:8081
       # Set to true only if you need cookies / auth headers
       FILESERVER_CORS_SUPPORTS_CREDENTIALS: false
       KIOSK_QUEUE_CORS_SUPPORTS_CREDENTIALS: false
-    networks:
-      - app-network
 
   # FileServer Frontend Service
   fileserver-frontend:
@@ -27,16 +24,16 @@ services:
       args:
         APP_DIR: FileServer/frontend
         WORK_DIR: /app/fileserver-frontend
-        VITE_API_URL: http://192.168.1.38:5000
+        VITE_API_URL: "http://host.docker.internal:80"
     ports:
-      - "8080:80" # Expose FileServer frontend on port 8080
+      - "8080:81" # Expose FileServer frontend on port 8080
     environment:
-      - NGINX_PORT=80
-      # - API_URL=${API_URL:-http://localhost:5000}
+      - NGINX_PORT=81
+      - API_URL="http://host.docker.internal:80"
     depends_on:
       - backend
-    networks:
-      - app-network
+    # networks:
+    #   - app-network
 
   # KioskQueue Frontend Service
   kiosk-frontend:
@@ -46,18 +43,17 @@ services:
       args:
         APP_DIR: KioskQueue/frontend
         WORK_DIR: /app/kiosk-frontend
-        VITE_API_URL: http://192.168.1.38:5000
+        VITE_API_URL: "http://host.docker.internal:80"
     ports:
-      - "8081:80" # Expose KioskQueue frontend on port 8081
+      - "8081:81" # Expose KioskQueue frontend on port 8081
     environment:
-      - NGINX_PORT=80
-      # - API_URL=${API_URL:-http://localhost:5000}
+      - NGINX_PORT=81
+      - API_URL="http://host.docker.internal:80"
     depends_on:
       - backend
-    networks:
-      - app-network
+    # networks:
+    #   - app-network
 
 networks:
   app-network:
     driver: bridge
-
