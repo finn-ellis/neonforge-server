@@ -1,0 +1,1 @@
+adb shell am start -S foundation.icosa.openbrush/com.unity3d.player.UnityPlayerActivity
