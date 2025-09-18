@@ -39,7 +39,7 @@ COPY --from=builder ${WORK_DIR}/dist /usr/share/nginx/html
 # Copy env template and entrypoint script
 COPY ${APP_DIR}/public/env-template.js /usr/share/nginx/html/env-template.js
 COPY entrypoint.sh ./entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i -e '1s/^\xef\xbb\xbf//' -e 's/\r$//' ./entrypoint.sh && chmod +x ./entrypoint.sh
 
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
@@ -48,5 +48,5 @@ EXPOSE 80
 EXPOSE 81
 
 # Start NGINX when the container launches
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
