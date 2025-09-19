@@ -1,0 +1,1 @@
+adb install ../foundation.icosa.openbrush.apk

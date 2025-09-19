@@ -1,0 +1,1 @@
+shell am start -p com.picovr.settings
