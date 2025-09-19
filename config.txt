@@ -1,5 +1,5 @@
-open_guide:0
+open_guide:1
 ------
-home_pkg:foundation.icosa.openbrushunityeditor
+home_pkg:com.pvr.home
 ------
-remove_recent_pkg:foundation.icosa.openbrushunityeditor
+remove_recent_pkg:com.pvr.home
